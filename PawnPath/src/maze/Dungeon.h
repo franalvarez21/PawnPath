@@ -16,6 +16,10 @@ protected:
   uint8_t movementOrientation;
   bool hasMove;
 
+  uint8_t (*mapPointer[1])[SQUARE_AMOUNT_WEIGHT][SQUARE_AMOUNT_HEIGHT] = {
+      &Maps::map_0,
+  };
+
 public:
   void refresh(bool mode)
   {
@@ -175,6 +179,27 @@ public:
     }
     else
     {
+      switchOffAmount = 0;
+      uint8_t cell[SQUARE_AMOUNT_WEIGHT][SQUARE_AMOUNT_HEIGHT];
+      memcpy_P(&cell, mapPointer[level], sizeof(cell));
+
+      for (uint8_t i = 0; i < SQUARE_AMOUNT_WEIGHT; i++)
+      {
+        for (uint8_t j = 0; j < SQUARE_AMOUNT_HEIGHT; j++)
+        {
+          map[i][j] = cell[i][j];
+          if (map[i][j] == 9)
+          {
+            playerXPosition = i;
+            playerYPosition = j;
+            map[i][j] = 3;
+          }
+          if (map[i][j] == 7)
+          {
+            switchOffAmount++;
+          }
+        }
+      }
     }
   }
 

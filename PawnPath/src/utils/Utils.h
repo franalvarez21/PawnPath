@@ -6,6 +6,7 @@
 #include <Arduboy2.h>
 #include <ArduboyTones.h>
 
+#include "const/Maps.h"
 #include "const/Digits.h"
 #include "const/Common.h"
 #include "const/Lines.h"
