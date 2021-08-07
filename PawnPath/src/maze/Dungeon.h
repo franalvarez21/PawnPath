@@ -13,8 +13,8 @@ protected:
   uint8_t playerXPosition;
   uint8_t playerYPosition;
   uint8_t switchOffAmount;
-  uint8_t hasMove;
   uint8_t movementOrientation;
+  bool hasMove;
 
 public:
   void refresh()
@@ -22,7 +22,7 @@ public:
     timer = 0;
     level = 0;
     lastCutscene = 0;
-    hasMove = 0;
+    hasMove = false;
     reset();
   }
 
@@ -35,6 +35,11 @@ public:
   bool canContinue()
   {
     return switchOffAmount == 0;
+  }
+
+  bool hasMoved()
+  {
+    return hasMove;
   }
 
   bool cutsceneDone()
@@ -160,19 +165,13 @@ public:
   void reset()
   {
     clearMap();
-    clearPlayerPosition();
+
+    restorePlayerPosition();
+    hasMove = false;
 
     map[playerXPosition][playerYPosition] = 3;
 
     walkerCircle();
-
-    reduceMap();
-
-    playerBorders(0);
-    spawnObjects();
-    playerBorders(3);
-
-    map[playerXPosition][playerYPosition] = 3;
   }
 
   void displayLevel(Numbers *numbers)
@@ -263,18 +262,11 @@ public:
 private:
   bool pressed(uint8_t button)
   {
-    if (Arduboy2Base::justPressed(button)) // Arduboy2Base::pressed(button)
+    if (Arduboy2Base::justPressed(button))
     {
       return true;
     }
     return false;
-  }
-
-  void clearPlayerPosition()
-  {
-    playerXPosition = 6;
-    playerYPosition = 4;
-    hasMove = 0;
   }
 
   void clearMap()
@@ -302,45 +294,89 @@ private:
     }
   }
 
-  void reduceMap()
+  uint8_t getWalkerCiclesByLevel()
   {
-    for (uint8_t i = 1; i < SQUARE_AMOUNT_WEIGHT - 1; i++)
+    switch (level)
     {
-      for (uint8_t j = 1; j < SQUARE_AMOUNT_HEIGHT - 1; j++)
-      {
-        if (map[i][j] == 0 && map[i - 1][j] == 3 && map[i + 1][j] == 3 && map[i][j - 1] == 3 && map[i - 1][j + 1] == 3)
-        {
-          map[i][j] = 1;
-        }
-      }
+    case 0 ... 1: // 0 ... 20:
+      return 5;
+    case 2 ... 3: // 21 ... 40:
+      return 10;
+    case 4 ... 5: // 41 ... 60:
+      return 15;
+    case 6 ... 7: // 61 ... 80:
+      return 20;
+    default:
+      return 25;
+    }
+  }
+
+  uint8_t getMaxAmountsByLevel()
+  {
+    switch (level)
+    {
+    case 0 ... 1: // 0 ... 20:
+      return 1;
+    case 2 ... 3: // 21 ... 40:
+      return 3;
+    case 4 ... 5: // 41 ... 60:
+      return 5;
+    case 6 ... 7: // 61 ... 80:
+      return 7;
+    default:
+      return 9;
     }
   }
 
   void walkerCircle()
   {
-    for (uint8_t i = 0; i < WALKER_CYCLES; i++)
+    for (uint8_t i = 0; i < getWalkerCiclesByLevel(); i++)
     {
+      if (i % 10 == 0)
+      {
+        restorePlayerPosition();
+      }
       moveWalker();
-
       map[playerXPosition][playerYPosition] = 3;
     }
 
-    clearPlayerPosition();
+    spawnObjects();
+    restorePlayerPosition();
+    if (map[playerXPosition][playerYPosition] != 3)
+    {
+      if (map[playerXPosition][playerYPosition] == 7)
+      {
+        switchOffAmount--;
+      }
+    }
+    map[playerXPosition][playerYPosition] = 3;
+  }
+
+  void restorePlayerPosition()
+  {
+    playerXPosition = 6;
+    playerYPosition = 4;
   }
 
   void spawnObjects()
   {
     if (level < MAX_LEVEL)
     {
-      // Spawn Switch Points
       switchOffAmount = 0;
-      for (uint8_t i = 0; i < (3 + rand() % RANDOM_ENEMY_AMOUNT); i++)
+      for (uint8_t i = 0; i < (1 + rand() % getMaxAmountsByLevel()); i++)
       {
         if (rand() % 2 == 0)
         {
-          spawnObject((i == 0) ? 4 + (rand() % 3) : 6);
+          spawnObject(6);
         }
+        else
+        {
+          spawnObject(4 + (rand() % 2));
+        }
+      }
 
+      for (uint8_t i = 0; i < getMaxAmountsByLevel(); i++)
+      {
         if (spawnObject(7))
         {
           switchOffAmount++;
@@ -419,9 +455,6 @@ private:
   {
     switch (map[x][y])
     {
-    case 0:
-      // Arduboy2Base::drawBitmap(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, Common::empty_position, SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      break;
     case 1:
       Arduboy2Base::drawBitmap(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, Common::empty_position, SQUARE_SIZE, SQUARE_SIZE, WHITE);
       break;
@@ -453,98 +486,6 @@ private:
     case 8:
       Arduboy2Base::drawBitmap(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, Common::goal_position_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
       break;
-    }
-  }
-
-  void displayMaze(uint8_t x, uint8_t y, uint8_t i, uint8_t j)
-  {
-    if (map[x][y] > 0)
-    {
-      if (map[x - 1][y] > 0 && map[x + 1][y] > 0 && map[x][y - 1] == 0 && map[x][y + 1] > 0)
-      {
-        //top
-        Arduboy2Base::drawFastHLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (map[x - 1][y] > 0 && map[x + 1][y] == 0 && map[x][y - 1] > 0 && map[x][y + 1] > 0)
-      {
-        //right
-        Arduboy2Base::drawFastVLine(SQUARE_SIZE * i + (SQUARE_SIZE - 1) - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (map[x - 1][y] == 0 && map[x + 1][y] > 0 && map[x][y - 1] > 0 && map[x][y + 1] > 0)
-      {
-        //left
-        Arduboy2Base::drawFastVLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (map[x - 1][y] > 0 && map[x + 1][y] > 0 && map[x][y - 1] > 0 && map[x][y + 1] == 0)
-      {
-        //bottom
-        Arduboy2Base::drawFastHLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - 1, SQUARE_SIZE, WHITE);
-      }
-      else if (map[x - 1][y] == 0 && map[x + 1][y] > 0 && map[x][y - 1] == 0 && map[x][y + 1] > 0)
-      {
-        Arduboy2Base::drawFastHLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        Arduboy2Base::drawFastVLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (map[x - 1][y] > 0 && map[x + 1][y] == 0 && map[x][y - 1] == 0 && map[x][y + 1] > 0)
-      {
-        Arduboy2Base::drawFastHLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        Arduboy2Base::drawFastVLine(SQUARE_SIZE * i + (SQUARE_SIZE - 1) - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (map[x - 1][y] > 0 && map[x + 1][y] == 0 && map[x][y - 1] > 0 && map[x][y + 1] == 0)
-      {
-        Arduboy2Base::drawFastHLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - 1, SQUARE_SIZE, WHITE);
-        Arduboy2Base::drawFastVLine(SQUARE_SIZE * i + (SQUARE_SIZE - 1) - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (map[x - 1][y] == 0 && map[x + 1][y] > 0 && map[x][y - 1] > 0 && map[x][y + 1] == 0)
-      {
-        Arduboy2Base::drawFastHLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - 1, SQUARE_SIZE, WHITE);
-        Arduboy2Base::drawFastVLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (map[x - 1][y] == 0 && map[x + 1][y] > 0 && map[x][y - 1] == 0 && map[x][y + 1] == 0)
-      {
-        Arduboy2Base::drawFastHLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        Arduboy2Base::drawFastHLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - 1, SQUARE_SIZE, WHITE);
-        Arduboy2Base::drawFastVLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (map[x - 1][y] > 0 && map[x + 1][y] == 0 && map[x][y - 1] == 0 && map[x][y + 1] == 0)
-      {
-        Arduboy2Base::drawFastHLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        Arduboy2Base::drawFastHLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - 1, SQUARE_SIZE, WHITE);
-        Arduboy2Base::drawFastVLine(SQUARE_SIZE * i + (SQUARE_SIZE - 1) - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (map[x - 1][y] == 0 && map[x + 1][y] == 0 && map[x][y - 1] > 0 && map[x][y + 1] == 0)
-      {
-        Arduboy2Base::drawFastHLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - 1, SQUARE_SIZE, WHITE);
-        Arduboy2Base::drawFastVLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        Arduboy2Base::drawFastVLine(SQUARE_SIZE * i + (SQUARE_SIZE - 1) - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (map[x - 1][y] == 0 && map[x + 1][y] == 0 && map[x][y - 1] == 0 && map[x][y + 1] > 0)
-      {
-        Arduboy2Base::drawFastHLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        Arduboy2Base::drawFastVLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        Arduboy2Base::drawFastVLine(SQUARE_SIZE * i + (SQUARE_SIZE - 1) - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-      else if (map[x - 1][y] > 0 && map[x + 1][y] > 0 && map[x][y - 1] == 0 && map[x][y + 1] == 0)
-      {
-        Arduboy2Base::drawFastHLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        Arduboy2Base::drawFastHLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - 1, SQUARE_SIZE, WHITE);
-      }
-      else if (map[x - 1][y] == 0 && map[x + 1][y] == 0 && map[x][y - 1] > 0 && map[x][y + 1] > 0)
-      {
-        Arduboy2Base::drawFastVLine(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-        Arduboy2Base::drawFastVLine(SQUARE_SIZE * i + (SQUARE_SIZE - 1) - 2, SQUARE_SIZE * j - SQUARE_SIZE, SQUARE_SIZE, WHITE);
-      }
-    }
-  }
-
-  void playerBorders(uint8_t value)
-  {
-    for (uint8_t x = 0; x < 5; x++)
-    {
-      for (uint8_t y = 0; y < 5; y++)
-      {
-        map[playerXPosition + (2 - x)][playerYPosition + (2 - y)] = value;
-      }
     }
   }
 

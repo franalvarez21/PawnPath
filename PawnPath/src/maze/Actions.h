@@ -6,8 +6,12 @@ public:
   {
     if (dungeon->canContinue())
     {
-      utils->subtleOkBeep();
-      dungeon->increaseLevel();
+      if (dungeon->hasMoved())
+      {
+        stats->incScore(5);
+        dungeon->increaseLevel();
+        utils->subtleOkBeep();
+      }
       dungeon->reset();
       return true;
     }
@@ -15,10 +19,12 @@ public:
     switch (action)
     {
     case 1:
+      // Fall of map
       stats->decHP(MAX_LIFE);
       utils->subtleKoBeep();
       break;
     case 2:
+      // Restore HP
       stats->incHP(1);
       utils->subtleOkBeep();
       stats->incScore(1);
@@ -28,6 +34,7 @@ public:
       utils->subtleOkBeep();
       break;
     case 4:
+      // Decrease HP
       stats->decHP(1);
       utils->subtleKoBeep();
       break;
