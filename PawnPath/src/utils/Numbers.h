@@ -22,6 +22,7 @@ public:
     for (uint8_t i = 0; i < 4; i++)
     {
       size_t pos = (number % multiplier) == 0 ? 0 : (number % multiplier) / (multiplier / 10);
+      Arduboy2Base::drawBitmap(x + (40 - 10 * i) - 1, y - 1, Digits::back, 10, 10, BLACK);
       Arduboy2Base::drawBitmap(x + (40 - 10 * i), y, *digitList[pos], 8, 8, WHITE);
       multiplier *= 10;
     }

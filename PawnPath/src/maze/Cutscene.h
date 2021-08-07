@@ -19,7 +19,6 @@ public:
 
   void eventDisplay()
   {
-    //TODO: Print event picture
     if (timer > 0)
     {
       timer--;

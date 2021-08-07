@@ -14,6 +14,7 @@
 struct Utils
 {
   bool sound = false;
+  bool mode = false;
   uint8_t music = 0;
   uint8_t cycle = 10;
   uint8_t lullaby = 0;
@@ -47,6 +48,11 @@ struct Utils
       }
       cycle = 10;
     }
+  }
+
+  void changeMode()
+  {
+    mode = !mode;
   }
 
   void changeSound()
@@ -90,6 +96,6 @@ struct Utils
   }
 };
 
+#include "Numbers.h"
 #include "Stats.h"
 #include "Effects.h"
-#include "Numbers.h"

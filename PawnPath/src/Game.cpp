@@ -88,7 +88,7 @@ void Game::mainMenuTick(void)
 {
   rand() % analogRead(0);
   utils.music = 2;
-  titleMenu.eventDisplay(utils.cycle, utils.sound);
+  titleMenu.eventDisplay(utils.cycle, utils.sound, utils.mode);
   if (!titleMenu.action(&utils))
   {
     restart();
@@ -100,7 +100,7 @@ void Game::mainMenuTick(void)
 
 void Game::mainPauseTick()
 {
-  pauseMenu.eventDisplay(&stats, &numbers, utils.sound);
+  pauseMenu.eventDisplay(utils.sound);
   switch (pauseMenu.action(&utils))
   {
   case 1:
@@ -113,7 +113,7 @@ void Game::mainPauseTick()
     break;
   }
 
-  stats.displayHub();
+  stats.displayHub(&numbers, false);
   dungeon.borders();
 }
 
@@ -125,7 +125,7 @@ void Game::mainGameTick(void)
     onStage = 1;
     utils.lullaby = 0;
 
-    stats.displayHub();
+    stats.displayHub(&numbers);
     dungeon.borders();
   }
   else
@@ -139,7 +139,7 @@ void Game::mainGameTick(void)
     }
     else if (dungeon.level < MAX_LEVEL)
     {
-      dungeon.display(utils.cycle);
+      dungeon.display(utils.cycle, utils.mode);
     }
 
     if (dungeon.level == MAX_LEVEL)
@@ -150,7 +150,6 @@ void Game::mainGameTick(void)
     }
     else if (stats.getHP() < 1)
     {
-      restart();
       utils.koBeep();
       dungeon.cutsceneStart(true);
       onStage = 5;
@@ -158,7 +157,7 @@ void Game::mainGameTick(void)
     }
     else
     {
-      stats.displayHub();
+      stats.displayHub(&numbers);
       dungeon.borders();
     }
   }
@@ -167,6 +166,14 @@ void Game::mainGameTick(void)
 void Game::mainCutsceneTick(void)
 {
   dungeon.cutscene.eventDisplay();
+  if (utils.mode)
+  {
+    Arduboy2Base::drawBitmap(0, 0, Title::title_loading, 128, 64, WHITE);
+  }
+  else
+  {
+    Arduboy2Base::drawBitmap(0, 0, Title::title_loading_2, 128, 64, WHITE);
+  }
   if (dungeon.cutscene.enabled())
   {
     onStage = 2;
@@ -176,7 +183,7 @@ void Game::mainCutsceneTick(void)
 
 void Game::mainLevelCutsceneTick(void)
 {
-  dungeon.displayLevelStart(&utils, &effects, &stats, &numbers);
+  dungeon.displayLevelStart(&utils, &effects);
   dungeon.cutscene.eventDisplay();
   if (dungeon.cutscene.enabled())
   {
@@ -185,7 +192,8 @@ void Game::mainLevelCutsceneTick(void)
   }
 
   dungeon.borders();
-  stats.displayHub();
+  dungeon.displayLevel(&numbers);
+  stats.displayHub(&numbers, false);
 }
 
 void Game::mainGameoverCutsceneTick(void)
@@ -202,6 +210,11 @@ void Game::mainGameoverCutsceneTick(void)
 void Game::mainLastCutsceneTick(void)
 {
   utils.music = 3;
-  dungeon.displayEnding();
+  dungeon.displayEnding(&stats, &numbers);
   dungeon.cutscene.eventDisplay();
+  if (dungeon.cutscene.enabled() && (arduboy.justPressed(A_BUTTON) || arduboy.justPressed(B_BUTTON) || arduboy.justPressed(LEFT_BUTTON) || arduboy.justPressed(RIGHT_BUTTON)))
+  {
+    onStage = 0;
+    utils.lullaby = 0;
+  }
 }

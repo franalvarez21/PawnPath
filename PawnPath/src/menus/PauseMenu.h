@@ -14,16 +14,20 @@ public:
   {
     upDownMovement();
 
+    if (leftRightMovement())
+    {
+      if (option == 1)
+      {
+        utils->changeSound();
+      }
+    }
+
     if (okMovement())
     {
       if (option == 2)
       {
         utils->okBeep();
         return 2;
-      }
-      else if (option == 1)
-      {
-        utils->changeSound();
       }
       else if (option == 0)
       {
@@ -39,24 +43,22 @@ public:
     return 0;
   }
 
-  void eventDisplay(Stats *stats, Numbers *numbers, bool sound)
+  void eventDisplay(bool sound)
   {
-    Arduboy2Base::drawBitmap(18, 8, Lines::options, 34, 4, WHITE);
-    Arduboy2Base::drawBitmap(24, 20, Lines::back, 34, 4, WHITE);
+    Arduboy2Base::drawBitmap(24, 15, Lines::continueText, 39, 5, WHITE);
     if (sound)
     {
-      Arduboy2Base::drawBitmap(24, 28, Lines::sOn, 34, 4, WHITE);
+      Arduboy2Base::drawBitmap(24, 23, Lines::soundText, 24, 5, WHITE);
+      Arduboy2Base::drawBitmap(46, 23, Lines::on, 14, 5, WHITE);
     }
     else
     {
-      Arduboy2Base::drawBitmap(24, 28, Lines::sOff, 34, 4, WHITE);
+      Arduboy2Base::drawBitmap(24, 23, Lines::soundText, 24, 5, WHITE);
+      Arduboy2Base::drawBitmap(51, 23, Lines::off, 14, 5, WHITE);
     }
-    Arduboy2Base::drawBitmap(24, 36, Lines::mMenu, 34, 4, WHITE);
+    Arduboy2Base::drawBitmap(24, 31, Lines::backToMainMenu, 77, 5, WHITE);
 
-    displayMenuCursor(18, 20);
-
-    numbers->print(45, 50, stats->score);
-    Arduboy2Base::drawBitmap(99, 50, Lines::hubScore, 24, 5, WHITE);
+    displayMenuCursor(18, 15);
 
     Arduboy2Base::drawBitmap(90, 0, Title::title_border, 38, 38, WHITE);
   }

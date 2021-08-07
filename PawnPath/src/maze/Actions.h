@@ -6,6 +6,7 @@ public:
   {
     if (dungeon->canContinue())
     {
+      utils->subtleOkBeep();
       dungeon->increaseLevel();
       dungeon->reset();
       return true;
@@ -20,6 +21,7 @@ public:
     case 2:
       stats->incHP(1);
       utils->subtleOkBeep();
+      stats->incScore(1);
       break;
     case 3:
       // Restore map
@@ -32,10 +34,12 @@ public:
     case 5:
       // Activate goal
       utils->subtleOkBeep();
+      stats->incScore(5);
       break;
     case 6:
       // Deactivate goal
       utils->subtleKoBeep();
+      stats->decScore(5);
       break;
     }
 

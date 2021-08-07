@@ -30,14 +30,19 @@ public:
     }
   }
 
+  bool leftRightMovement()
+  {
+    return Arduboy2Base::justPressed(RIGHT_BUTTON) || Arduboy2Base::justPressed(LEFT_BUTTON);
+  }
+
   bool okMovement()
   {
-    return Arduboy2Base::justPressed(B_BUTTON) || Arduboy2Base::justPressed(RIGHT_BUTTON);
+    return Arduboy2Base::justPressed(B_BUTTON);
   }
 
   bool koMovement()
   {
-    return Arduboy2Base::justPressed(A_BUTTON) || Arduboy2Base::justPressed(LEFT_BUTTON);
+    return Arduboy2Base::justPressed(A_BUTTON);
   }
 
   void displayMenuCursor(uint8_t x, uint8_t y)
