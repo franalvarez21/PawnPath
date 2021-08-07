@@ -1,0 +1,5 @@
+.vscode
+.eslintrc.json
+PawnPath/images/*.png
+/*.hex
+/PawnPath/*.hex
