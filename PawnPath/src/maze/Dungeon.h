@@ -17,13 +17,13 @@ protected:
   bool hasMove;
 
 public:
-  void refresh()
+  void refresh(bool mode)
   {
     timer = 0;
     level = 0;
     lastCutscene = 0;
     hasMove = false;
-    reset();
+    reset(mode);
   }
 
   void cutsceneStart(bool start)
@@ -162,16 +162,20 @@ public:
     level++;
   }
 
-  void reset()
+  void reset(bool mode)
   {
     clearMap();
-
-    restorePlayerPosition();
     hasMove = false;
 
-    map[playerXPosition][playerYPosition] = 3;
-
-    walkerCircle();
+    if (mode)
+    {
+      restorePlayerPosition();
+      map[playerXPosition][playerYPosition] = 3;
+      walkerCircle();
+    }
+    else
+    {
+    }
   }
 
   void displayLevel(Numbers *numbers)
@@ -299,15 +303,15 @@ private:
     switch (level)
     {
     case 0 ... 1: // 0 ... 20:
-      return 5;
-    case 2 ... 3: // 21 ... 40:
       return 10;
-    case 4 ... 5: // 41 ... 60:
+    case 2 ... 3: // 21 ... 40:
       return 15;
-    case 6 ... 7: // 61 ... 80:
+    case 4 ... 5: // 41 ... 60:
       return 20;
-    default:
+    case 6 ... 7: // 61 ... 80:
       return 25;
+    default:
+      return 30;
     }
   }
 

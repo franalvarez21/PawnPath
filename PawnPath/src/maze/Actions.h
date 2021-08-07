@@ -12,7 +12,7 @@ public:
         dungeon->increaseLevel();
         utils->subtleOkBeep();
       }
-      dungeon->reset();
+      dungeon->reset(utils->mode);
       return true;
     }
 

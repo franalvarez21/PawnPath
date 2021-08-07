@@ -8,7 +8,7 @@
 #define SQUARE_SIZE 16
 #define ENEMY_AMOUNT 2
 #define RANDOM_ENEMY_AMOUNT 3
-#define CUTSCENE_TIMER 50
+#define CUTSCENE_TIMER 25
 #define MAX_LEVEL 10
 #define MAX_LIFE 8
 #define MAX_SCORE 9999

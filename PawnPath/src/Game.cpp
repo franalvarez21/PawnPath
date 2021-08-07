@@ -38,7 +38,7 @@ void Game::setup(void)
 
 void Game::restart(void)
 {
-  dungeon.refresh();
+  dungeon.refresh(utils.mode);
   stats.init();
   action = 0;
 }
