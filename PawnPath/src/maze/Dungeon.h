@@ -70,13 +70,13 @@ protected:
   };
 
 public:
-  void refresh(bool mode)
+  void refresh(Stats *stats, bool mode)
   {
     timer = 0;
     level = 0;
     lastCutscene = 0;
     hasMove = false;
-    reset(mode);
+    reset(stats, mode);
   }
 
   void cutsceneStart(bool start)
@@ -215,7 +215,7 @@ public:
     level++;
   }
 
-  void reset(bool mode)
+  void reset(Stats *stats, bool mode)
   {
     clearMap();
     hasMove = false;
@@ -225,6 +225,7 @@ public:
       restorePlayerPosition();
       map[playerXPosition][playerYPosition] = 3;
       walkerCircle();
+      unfairMap(stats);
       unblockPathMap();
     }
     else
@@ -374,6 +375,23 @@ private:
         if (map[i][j] == 1)
         {
           map[i][j] = 3;
+        }
+      }
+    }
+  }
+
+  void unfairMap(Stats *stats)
+  {
+    if (stats->getHP() > 4)
+    {
+      for (uint8_t i = 0; i < SQUARE_AMOUNT_WEIGHT; i++)
+      {
+        for (uint8_t j = 0; j < SQUARE_AMOUNT_HEIGHT; j++)
+        {
+          if (map[i][j] == 4)
+          {
+            map[i][j] = 6;
+          }
         }
       }
     }
@@ -655,7 +673,6 @@ private:
       else if (map[playerXPosition][playerYPosition] == 5)
       {
         refreshMap();
-        map[playerXPosition][playerYPosition] = 3;
         return 3;
       }
       else if (map[playerXPosition][playerYPosition] == 6)

@@ -12,7 +12,7 @@ public:
         dungeon->increaseLevel();
         utils->subtleOkBeep();
       }
-      dungeon->reset(utils->mode);
+      dungeon->reset(stats, utils->mode);
       return true;
     }
 
@@ -20,7 +20,7 @@ public:
     {
     case 1:
       // Fall of map
-      dungeon->reset(utils->mode);
+      dungeon->reset(stats, utils->mode);
       utils->subtleKoBeep();
       stats->decHP(1);
       break;
