@@ -1,6 +1,8 @@
 # PawnPath
 
-PawnPath random path walker game for the Arduboy system
+PawnPath path walker game for the Arduboy system
+
+![Alt Text](https://github.com/franalvarez21/PawnPath/blob/main/PawnPath/images/titleScreen.png)
 
 ![Alt Text](https://github.com/franalvarez21/PawnPath/blob/main/PawnPath/demo.gif)
 
