@@ -8,7 +8,7 @@ Please refer to https://community.arduboy.com/ on how to acquire, compile or upl
 
 ## Gameplay
 
-![Alt Text](https://github.com/franalvarez21/PawnPath/blob/main/PawnPath/images/demo.gif)
+![Alt Text](https://github.com/franalvarez21/PawnPath/blob/main/PawnPath/demo.gif)
 
 ## Emulation notes
 
