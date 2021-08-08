@@ -16,8 +16,57 @@ protected:
   uint8_t movementOrientation;
   bool hasMove;
 
-  uint8_t (*mapPointer[1])[SQUARE_AMOUNT_WEIGHT][SQUARE_AMOUNT_HEIGHT] = {
+  uint8_t (*mapPointer[50])[CHALLENGE_MAP_X][CHALLENGE_MAP_Y] = {
       &Maps::map_0,
+      &Maps::map_1,
+      &Maps::map_2,
+      &Maps::map_3,
+      &Maps::map_4,
+      &Maps::map_5,
+      &Maps::map_6,
+      &Maps::map_7,
+      &Maps::map_8,
+      &Maps::map_9,
+      &Maps::map_10,
+      &Maps::map_11,
+      &Maps::map_12,
+      &Maps::map_13,
+      &Maps::map_14,
+      &Maps::map_15,
+      &Maps::map_16,
+      &Maps::map_17,
+      &Maps::map_18,
+      &Maps::map_19,
+      &Maps::map_20,
+      &Maps::map_21,
+      &Maps::map_22,
+      &Maps::map_23,
+      &Maps::map_24,
+      &Maps::map_25,
+      &Maps::map_26,
+      &Maps::map_27,
+      &Maps::map_28,
+      &Maps::map_29,
+      &Maps::map_30,
+      &Maps::map_31,
+      &Maps::map_32,
+      &Maps::map_33,
+      &Maps::map_34,
+      &Maps::map_35,
+      &Maps::map_36,
+      &Maps::map_37,
+      &Maps::map_38,
+      &Maps::map_39,
+      &Maps::map_40,
+      &Maps::map_41,
+      &Maps::map_42,
+      &Maps::map_43,
+      &Maps::map_44,
+      &Maps::map_45,
+      &Maps::map_46,
+      &Maps::map_47,
+      &Maps::map_48,
+      &Maps::map_49,
   };
 
 public:
@@ -176,27 +225,34 @@ public:
       restorePlayerPosition();
       map[playerXPosition][playerYPosition] = 3;
       walkerCircle();
+      unblockPathMap();
     }
     else
     {
       switchOffAmount = 0;
-      uint8_t cell[SQUARE_AMOUNT_WEIGHT][SQUARE_AMOUNT_HEIGHT];
+      uint8_t cell[CHALLENGE_MAP_X][CHALLENGE_MAP_Y];
       memcpy_P(&cell, mapPointer[level], sizeof(cell));
 
-      for (uint8_t i = 0; i < SQUARE_AMOUNT_WEIGHT; i++)
+      for (uint8_t i = 0; i < CHALLENGE_MAP_X; i++)
       {
-        for (uint8_t j = 0; j < SQUARE_AMOUNT_HEIGHT; j++)
+        for (uint8_t j = 0; j < CHALLENGE_MAP_Y; j++)
         {
-          map[i][j] = cell[i][j];
-          if (map[i][j] == 9)
+          map[i + 1][j + 1] = cell[i][j];
+          switch (cell[i][j])
           {
-            playerXPosition = i;
-            playerYPosition = j;
-            map[i][j] = 3;
-          }
-          if (map[i][j] == 7)
-          {
+          case 10:
+            playerXPosition = i + 1;
+            playerYPosition = j + 1;
+            map[i + 1][j + 1] = 2;
+            break;
+          case 11:
+            playerXPosition = i + 1;
+            playerYPosition = j + 1;
+            map[i + 1][j + 1] = 9;
+            break;
+          case 7:
             switchOffAmount++;
+            break;
           }
         }
       }
@@ -323,17 +379,64 @@ private:
     }
   }
 
+  void unblockPathMap()
+  {
+    for (uint8_t i = 1; i < SQUARE_AMOUNT_WEIGHT - 1; i++)
+    {
+      for (uint8_t j = 1; j < SQUARE_AMOUNT_HEIGHT - 1; j++)
+      {
+        uint8_t amount = 0;
+        if (map[i - 1][j] == 0)
+        {
+          amount++;
+        }
+        if (map[i + 1][j] == 0)
+        {
+          amount++;
+        }
+        if (map[i][j - 1] == 0)
+        {
+          amount++;
+        }
+        if (map[i][j + 1] == 0)
+        {
+          amount++;
+        }
+
+        if (map[i][j] == 7 && amount == 2)
+        {
+          if (map[i - 1][j] == 0 && i > 0)
+          {
+            map[i - 1][j] = 2;
+          }
+          else if (map[i][j - 1] == 0 && j > 0)
+          {
+            map[i][j - 1] = 2;
+          }
+          else if (map[i + 1][j] == 0 && i < SQUARE_AMOUNT_WEIGHT - 1)
+          {
+            map[i + 1][j] = 2;
+          }
+          else if (map[i][j + 1] == 0 && j < SQUARE_AMOUNT_HEIGHT - 1)
+          {
+            map[i][j + 1] = 2;
+          }
+        }
+      }
+    }
+  }
+
   uint8_t getWalkerCiclesByLevel()
   {
     switch (level)
     {
-    case 0 ... 1: // 0 ... 20:
+    case 0 ... 20:
       return 10;
-    case 2 ... 3: // 21 ... 40:
+    case 21 ... 40:
       return 15;
-    case 4 ... 5: // 41 ... 60:
+    case 41 ... 60:
       return 20;
-    case 6 ... 7: // 61 ... 80:
+    case 61 ... 80:
       return 25;
     default:
       return 30;
@@ -344,16 +447,16 @@ private:
   {
     switch (level)
     {
-    case 0 ... 1: // 0 ... 20:
-      return 1;
-    case 2 ... 3: // 21 ... 40:
+    case 0 ... 20:
       return 3;
-    case 4 ... 5: // 41 ... 60:
+    case 21 ... 40:
       return 5;
-    case 6 ... 7: // 61 ... 80:
+    case 41 ... 60:
       return 7;
-    default:
+    case 61 ... 80:
       return 9;
+    default:
+      return 12;
     }
   }
 
@@ -383,8 +486,8 @@ private:
 
   void restorePlayerPosition()
   {
-    playerXPosition = 6;
-    playerYPosition = 4;
+    playerXPosition = 4;
+    playerYPosition = 3;
   }
 
   void spawnObjects()
@@ -514,6 +617,9 @@ private:
       break;
     case 8:
       Arduboy2Base::drawBitmap(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, Common::goal_position_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+      break;
+    case 9:
+      Arduboy2Base::drawBitmap(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, Common::hard_position, SQUARE_SIZE, SQUARE_SIZE, WHITE);
       break;
     }
   }

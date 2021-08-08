@@ -142,7 +142,7 @@ void Game::mainGameTick(void)
       dungeon.display(utils.cycle, utils.mode);
     }
 
-    if (dungeon.level == MAX_LEVEL)
+    if ((utils.mode && dungeon.level == MAX_LEVEL) || (!utils.mode && dungeon.level == MAX_CHALLENGE_LEVEL))
     {
       dungeon.cutsceneStart(false);
       onStage = 6;

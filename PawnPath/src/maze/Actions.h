@@ -20,8 +20,9 @@ public:
     {
     case 1:
       // Fall of map
-      stats->decHP(MAX_LIFE);
+      dungeon->reset(utils->mode);
       utils->subtleKoBeep();
+      stats->decHP(1);
       break;
     case 2:
       // Restore HP

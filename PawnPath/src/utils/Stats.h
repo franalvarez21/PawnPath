@@ -7,13 +7,15 @@ struct Stats
   uint8_t change;
   uint8_t changeAmount;
   uint32_t score;
+  uint32_t maxReachedScore;
 
   void init()
   {
-    hp = 5;
+    hp = MAX_LIFE;
     hurt = 0;
     change = 0;
     score = 0;
+    maxReachedScore = 0;
   }
 
   void incHP(uint8_t val)
@@ -39,20 +41,29 @@ struct Stats
   void incScore(uint32_t val)
   {
     score = min(score + val, MAX_SCORE);
-    change = CHANGE_FRAMES;
-    changeAmount = val;
+    if (score > maxReachedScore || score == maxReachedScore)
+    {
+      change = CHANGE_FRAMES;
+      changeAmount = val;
+    }
+    maxReachedScore = score;
   }
 
   void decScore(uint32_t val)
   {
-    score = max(score - val, 0);
-    change = CHANGE_FRAMES;
-    changeAmount = val;
+    if (val > score)
+    {
+      score = 0;
+    }
+    else
+    {
+      score = max(score - val, 0);
+    }
   }
 
   uint32_t getScore()
   {
-    return min(score, MAX_SCORE);
+    return min(max(score, maxReachedScore), MAX_SCORE);
   }
 
   void displayHub(Numbers *numbers, bool animatedScore = true)
@@ -75,7 +86,7 @@ struct Stats
     }
     else if ((change > 0 && change < 15) || !animatedScore)
     {
-      displayScore(numbers, score);
+      displayScore(numbers, getScore());
     }
   }
 
