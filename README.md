@@ -10,12 +10,11 @@ Please refer to https://community.arduboy.com/ on how to acquire, compile or upl
 
 ## Gameplay
 
-Pad: Movement
-B Button: Pause
-A Button: Action
-Game contains 3 game modes:
+- Pad: Movement
+- B Button: Pause
+- A Button: Action
 
-USE the left and right arrows to choose game mode
+Game contains 3 game modes (USE the left and right arrows to choose game mode)
 
 # Endless mode
 - Play for a high score.
