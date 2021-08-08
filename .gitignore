@@ -1,8 +1,5 @@
 .vscode
 .eslintrc.json
-PawnPath/images/*.png
-PawnPath/images/Digits/*.png
-PawnPath/images/Texts/*.png
-PawnPath/images/Time/*.png
+PawnPath/images
 /*.hex
 /PawnPath/*.hex
