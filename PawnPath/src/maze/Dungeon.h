@@ -75,7 +75,7 @@ public:
   void refresh(Stats *stats, uint8_t mode)
   {
     timer = 0;
-    level = 0;
+    level = 3;
     lastCutscene = 0;
     hasMove = false;
     reset(stats, mode);
@@ -185,26 +185,38 @@ public:
     return false;
   }
 
-  bool moveWalker()
+  uint8_t moveWalker()
   {
     uint8_t can_continue = 10;
-    bool move = false;
+    uint8_t move = 0;
 
-    while (!move && can_continue > 0)
+    while (move == 0 && can_continue > 0)
     {
       switch (rand() % 4)
       {
       case 0:
-        move = moveTop();
+        if (moveTop())
+        {
+          move = 1;
+        }
         break;
       case 1:
-        move = moveRight();
+        if (moveRight())
+        {
+          move = 2;
+        }
         break;
       case 2:
-        move = moveDown();
+        if (moveDown())
+        {
+          move = 3;
+        }
         break;
       case 3:
-        move = moveLeft();
+        if (moveLeft())
+        {
+          move = 4;
+        }
         break;
       }
       can_continue--;
@@ -392,7 +404,7 @@ private:
 
   void unfairMap(Stats *stats)
   {
-    if (stats->getHP() > 4)
+    if (stats->getHP() > 5)
     {
       for (uint8_t i = 0; i < SQUARE_AMOUNT_WEIGHT; i++)
       {
@@ -496,8 +508,44 @@ private:
       {
         restorePlayerPosition();
       }
-      moveWalker();
-      map[playerXPosition][playerYPosition] = 3;
+
+      bool trap = false;
+      switch (moveWalker())
+      {
+      case 1: // Top
+        if (playerYPosition > 1 && map[playerXPosition][playerYPosition - 1] == 3)
+        {
+          trap = true;
+        }
+        break;
+      case 2: // Right
+        if (playerXPosition < SQUARE_AMOUNT_WEIGHT - 2 && map[playerXPosition + 1][playerYPosition] == 3)
+        {
+          trap = true;
+        }
+        break;
+      case 3: // Bottom
+        if (playerYPosition < SQUARE_AMOUNT_HEIGHT - 2 && map[playerXPosition][playerYPosition + 1] == 3)
+        {
+          trap = true;
+        }
+        break;
+      case 4: // Left
+        if (playerXPosition > 1 && map[playerXPosition - 1][playerYPosition] == 3)
+        {
+          trap = true;
+        }
+        break;
+      }
+
+      if (!trap)
+      {
+        map[playerXPosition][playerYPosition] = 3;
+      }
+      else
+      {
+        map[playerXPosition][playerYPosition] = 6;
+      }
     }
 
     spawnObjects();
