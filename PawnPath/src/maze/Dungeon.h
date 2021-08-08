@@ -75,7 +75,7 @@ public:
   void refresh(Stats *stats, uint8_t mode)
   {
     timer = 0;
-    level = 3;
+    level = 8;
     lastCutscene = 0;
     hasMove = false;
     reset(stats, mode);
