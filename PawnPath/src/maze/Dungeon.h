@@ -135,7 +135,7 @@ public:
 
   bool moveLeft()
   {
-    if (playerXPosition - 1 > 0)
+    if (playerXPosition - 1 > 1)
     {
       if (map[playerXPosition - 1][playerYPosition] == 0)
       {
@@ -148,7 +148,7 @@ public:
 
   bool moveRight()
   {
-    if (playerXPosition + 1 < SQUARE_AMOUNT_WEIGHT - 1)
+    if (playerXPosition + 1 < SQUARE_AMOUNT_WEIGHT - 2)
     {
       if (map[playerXPosition + 1][playerYPosition] == 0)
       {
@@ -174,7 +174,7 @@ public:
 
   bool moveDown()
   {
-    if (playerYPosition + 1 < SQUARE_AMOUNT_HEIGHT - 1)
+    if (playerYPosition + 1 < SQUARE_AMOUNT_HEIGHT - 2)
     {
       if (map[playerXPosition][playerYPosition + 1] == 0)
       {
@@ -303,6 +303,7 @@ public:
   {
     uint8_t camX = (playerXPosition < 5) ? 1 : playerXPosition - 4;
     uint8_t camY = (playerYPosition < 3) ? 1 : playerYPosition - 2;
+    camX = (playerXPosition > 12) ? 9 : camX;
 
     for (uint8_t x = camX, i = 1; i < 8 && x < SQUARE_AMOUNT_WEIGHT - 1; x++, i++)
     {
@@ -445,19 +446,19 @@ private:
 
         if (map[i][j] == 7 && amount == 2)
         {
-          if (map[i - 1][j] == 0 && i > 0)
+          if (map[i - 1][j] == 0 && i > 2)
           {
             map[i - 1][j] = 2;
           }
-          else if (map[i][j - 1] == 0 && j > 0)
+          else if (map[i][j - 1] == 0 && j > 1)
           {
             map[i][j - 1] = 2;
           }
-          else if (map[i + 1][j] == 0 && i < SQUARE_AMOUNT_WEIGHT - 1)
+          else if (map[i + 1][j] == 0 && i < SQUARE_AMOUNT_WEIGHT - 3)
           {
             map[i + 1][j] = 2;
           }
-          else if (map[i][j + 1] == 0 && j < SQUARE_AMOUNT_HEIGHT - 1)
+          else if (map[i][j + 1] == 0 && j < SQUARE_AMOUNT_HEIGHT - 3)
           {
             map[i][j + 1] = 2;
           }
@@ -562,7 +563,7 @@ private:
 
   void restorePlayerPosition()
   {
-    playerXPosition = 4;
+    playerXPosition = 6;
     playerYPosition = 3;
   }
 
