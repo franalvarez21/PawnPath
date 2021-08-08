@@ -15,7 +15,7 @@ Please refer to https://community.arduboy.com/ on how to acquire, compile or upl
 - B Button: Pause
 - A Button: Action
 
-Game contains 3 game modes (USE the left and right arrows to choose game mode)
+Game contains 3 game modes (USE the left and right arrows to choose game mode IN the title menu)
 
 # Endless mode
 - Play for a high score.
