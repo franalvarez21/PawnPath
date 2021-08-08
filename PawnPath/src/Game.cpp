@@ -142,7 +142,7 @@ void Game::mainGameTick(void)
       dungeon.display(utils.cycle, utils.mode);
     }
 
-    if ((utils.mode && dungeon.level == MAX_LEVEL) || (!utils.mode && dungeon.level == MAX_CHALLENGE_LEVEL))
+    if ((utils.mode == 0 && dungeon.level == MAX_LEVEL) || (utils.mode == 1 && dungeon.level == MAX_CHALLENGE_LEVEL) || (utils.mode == 2 && dungeon.level == MAX_ADVANCE_LEVEL))
     {
       dungeon.cutsceneStart(false);
       onStage = 6;
@@ -166,13 +166,17 @@ void Game::mainGameTick(void)
 void Game::mainCutsceneTick(void)
 {
   dungeon.cutscene.eventDisplay();
-  if (utils.mode)
+  if (utils.mode == 0)
   {
     Arduboy2Base::drawBitmap(0, 0, Title::title_loading, 128, 64, WHITE);
   }
-  else
+  else if (utils.mode == 1)
   {
     Arduboy2Base::drawBitmap(0, 0, Title::title_loading_2, 128, 64, WHITE);
+  }
+  else if (utils.mode == 2)
+  {
+    Arduboy2Base::drawBitmap(0, 0, Title::title_loading_3, 128, 64, WHITE);
   }
   if (dungeon.cutscene.enabled())
   {

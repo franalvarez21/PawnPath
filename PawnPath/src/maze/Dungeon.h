@@ -16,7 +16,7 @@ protected:
   uint8_t movementOrientation;
   bool hasMove;
 
-  uint8_t (*mapPointer[50])[CHALLENGE_MAP_X][CHALLENGE_MAP_Y] = {
+  uint8_t (*mapPointer[52])[CHALLENGE_MAP_X][CHALLENGE_MAP_Y] = {
       &Maps::map_0,
       &Maps::map_1,
       &Maps::map_2,
@@ -67,10 +67,12 @@ protected:
       &Maps::map_47,
       &Maps::map_48,
       &Maps::map_49,
+      &Maps::map_50,
+      &Maps::map_51,
   };
 
 public:
-  void refresh(Stats *stats, bool mode)
+  void refresh(Stats *stats, uint8_t mode)
   {
     timer = 0;
     level = 0;
@@ -215,12 +217,13 @@ public:
     level++;
   }
 
-  void reset(Stats *stats, bool mode)
+  void reset(Stats *stats, uint8_t mode)
   {
     clearMap();
     hasMove = false;
+    uint8_t cell[CHALLENGE_MAP_X][CHALLENGE_MAP_Y];
 
-    if (mode)
+    if (mode == 0)
     {
       restorePlayerPosition();
       map[playerXPosition][playerYPosition] = 3;
@@ -228,12 +231,19 @@ public:
       unfairMap(stats);
       unblockPathMap();
     }
+    else if (mode == 1)
+    {
+      switchOffAmount = 0;
+      memcpy_P(&cell, mapPointer[level], sizeof(cell));
+    }
     else
     {
       switchOffAmount = 0;
-      uint8_t cell[CHALLENGE_MAP_X][CHALLENGE_MAP_Y];
-      memcpy_P(&cell, mapPointer[level], sizeof(cell));
+      memcpy_P(&cell, mapPointer[level + MAX_CHALLENGE_LEVEL], sizeof(cell));
+    }
 
+    if (mode > 0)
+    {
       for (uint8_t i = 0; i < CHALLENGE_MAP_X; i++)
       {
         for (uint8_t j = 0; j < CHALLENGE_MAP_Y; j++)
@@ -277,7 +287,7 @@ public:
     }
   }
 
-  void display(uint8_t cycle, bool mode)
+  void display(uint8_t cycle, uint8_t mode)
   {
     uint8_t camX = (playerXPosition < 5) ? 1 : playerXPosition - 4;
     uint8_t camY = (playerYPosition < 3) ? 1 : playerYPosition - 2;
@@ -601,7 +611,7 @@ private:
     return (map[i][j] == 3 && map[i - 1][j] < 4 && map[i][j - 1] < 4 && map[i + 1][j] < 4 && map[i][j + 1] < 4);
   }
 
-  void displayElements(bool mode, uint8_t x, uint8_t y, uint8_t i, uint8_t j, uint8_t cycle)
+  void displayElements(uint8_t mode, uint8_t x, uint8_t y, uint8_t i, uint8_t j, uint8_t cycle)
   {
     switch (map[x][y])
     {
@@ -624,13 +634,13 @@ private:
       Arduboy2Base::drawBitmap(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, (cycle <= 5) ? Common::spike_position : Common::spike_position_2, SQUARE_SIZE, SQUARE_SIZE, WHITE);
       break;
     case 7:
-      if (mode)
+      if (mode == 1)
       {
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, (switchOffAmount == 1) ? Common::crown_position : Common::goal_position, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, (switchOffAmount == 1) ? Common::flag_position : Common::goal_position, SQUARE_SIZE, SQUARE_SIZE, WHITE);
       }
       else
       {
-        Arduboy2Base::drawBitmap(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, (switchOffAmount == 1) ? Common::flag_position : Common::goal_position, SQUARE_SIZE, SQUARE_SIZE, WHITE);
+        Arduboy2Base::drawBitmap(SQUARE_SIZE * i - 2, SQUARE_SIZE * j - SQUARE_SIZE, (switchOffAmount == 1) ? Common::crown_position : Common::goal_position, SQUARE_SIZE, SQUARE_SIZE, WHITE);
       }
       break;
     case 8:

@@ -35,6 +35,11 @@ public:
     return Arduboy2Base::justPressed(RIGHT_BUTTON) || Arduboy2Base::justPressed(LEFT_BUTTON);
   }
 
+  bool leftMovement()
+  {
+    return Arduboy2Base::justPressed(LEFT_BUTTON);
+  }
+
   bool okMovement()
   {
     return Arduboy2Base::justPressed(B_BUTTON);

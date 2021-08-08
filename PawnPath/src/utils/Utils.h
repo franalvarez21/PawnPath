@@ -15,7 +15,7 @@
 struct Utils
 {
   bool sound = false;
-  bool mode = false;
+  uint8_t mode = 0;
   uint8_t music = 0;
   uint8_t cycle = 10;
   uint8_t lullaby = 0;
@@ -51,9 +51,28 @@ struct Utils
     }
   }
 
-  void changeMode()
+  void changeRightMode()
   {
-    mode = !mode;
+    if (mode >= 2)
+    {
+      mode = 0;
+    }
+    else
+    {
+      mode++;
+    }
+  }
+
+  void changeLeftMode()
+  {
+    if (mode <= 0)
+    {
+      mode = 2;
+    }
+    else
+    {
+      mode--;
+    }
   }
 
   void changeSound()

@@ -17,7 +17,14 @@ public:
       }
       else if (option == 0)
       {
-        utils->changeMode();
+        if (leftMovement())
+        {
+          utils->changeLeftMode();
+        }
+        else
+        {
+          utils->changeRightMode();
+        }
       }
     }
 
@@ -32,19 +39,23 @@ public:
     return true;
   }
 
-  void eventDisplay(uint8_t cycle, bool sound, bool mode)
+  void eventDisplay(uint8_t cycle, bool sound, uint8_t mode)
   {
     Arduboy2Base::drawBitmap(0, 0, Title::title, 128, 64, WHITE);
 
     Arduboy2Base::drawBitmap(104, 51, Lines::start, 24, 5, WHITE);
 
-    if (mode)
+    if (mode == 0)
     {
       Arduboy2Base::drawBitmap(62, 51, Lines::endlessText, 34, 5, WHITE);
     }
-    else
+    else if(mode == 1)
     {
       Arduboy2Base::drawBitmap(62, 51, Lines::challengeText, 34, 5, WHITE);
+    }
+    else
+    {
+      Arduboy2Base::drawBitmap(62, 51, Lines::advanceText, 34, 5, WHITE);
     }
 
     Arduboy2Base::drawBitmap(104, 59, Lines::soundText, 24, 5, WHITE);
