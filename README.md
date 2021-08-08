@@ -66,7 +66,7 @@ https://github.com/felipemanga/ProjectABE
 
 ## Arduboy site post
 
-WIP
+https://community.arduboy.com/t/pawnpath-path-trial-walker-game/9999
 
 ## Compilation log
 
