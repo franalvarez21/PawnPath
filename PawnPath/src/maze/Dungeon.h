@@ -260,18 +260,18 @@ public:
       {
         for (uint8_t j = 0; j < CHALLENGE_MAP_Y; j++)
         {
-          map[i + 1][j + 1] = cell[i][j];
+          map[i + 2][j + 1] = cell[i][j];
           switch (cell[i][j])
           {
           case 10:
-            playerXPosition = i + 1;
+            playerXPosition = i + 2;
             playerYPosition = j + 1;
-            map[i + 1][j + 1] = 2;
+            map[i + 2][j + 1] = 2;
             break;
           case 11:
-            playerXPosition = i + 1;
+            playerXPosition = i + 2;
             playerYPosition = j + 1;
-            map[i + 1][j + 1] = 9;
+            map[i + 2][j + 1] = 9;
             break;
           case 7:
             switchOffAmount++;
