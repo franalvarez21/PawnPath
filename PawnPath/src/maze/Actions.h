@@ -10,7 +10,7 @@ public:
       {
         stats->incScore(5);
         dungeon->increaseLevel();
-        utils->subtleOkBeep();
+        utils->levelUpBeep();
       }
       dungeon->reset(stats, utils->mode);
       return true;
@@ -21,32 +21,32 @@ public:
     case 1:
       // Fall of map
       dungeon->reset(stats, utils->mode);
-      utils->subtleKoBeep();
+      utils->koBeep();
       stats->decHP(1);
       break;
     case 2:
       // Restore HP
       stats->incHP(1);
-      utils->subtleOkBeep();
+      utils->okBeep();
       stats->incScore(1);
       break;
     case 3:
       // Restore map
-      utils->subtleOkBeep();
+      utils->okBeep();
       break;
     case 4:
       // Decrease HP
       stats->decHP(1);
-      utils->subtleKoBeep();
+      utils->koBeep();
       break;
     case 5:
       // Activate goal
-      utils->subtleOkBeep();
+      utils->fastBeep();
       stats->incScore(5);
       break;
     case 6:
       // Deactivate goal
-      utils->subtleKoBeep();
+      utils->boundBeep();
       stats->decScore(5);
       break;
     }

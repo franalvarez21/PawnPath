@@ -4,49 +4,33 @@
 #include <stdlib.h>
 
 #include <Arduboy2.h>
-#include <ArduboyTones.h>
+#include <ArduboyPlaytune.h>
 
 #include "const/Maps.h"
 #include "const/Digits.h"
 #include "const/Common.h"
 #include "const/Lines.h"
 #include "const/Title.h"
+#include "const/Tunes.h"
 
 struct Utils
 {
+  ArduboyPlaytune *soundTunes;
   bool sound = false;
   uint8_t mode = 0;
-  uint8_t music = 0;
   uint8_t cycle = 10;
-  uint8_t lullaby = 0;
-  uint8_t musicalLullaby[4][10] = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 1, 0, 1, 2, 0, 1, 1, 2, 0}, {0, 1, 2, 0, 1, 2, 0, 1, 1, 2}, {0, 1, 1, 1, 3, 3, 3, 1, 1, 1}};
+
+  void init(ArduboyPlaytune *ref)
+  {
+    soundTunes = ref;
+    soundTunes->initChannel(PIN_SPEAKER_1);
+  }
 
   void tick()
   {
     cycle--;
     if (cycle < 1)
     {
-      lullaby++;
-      if (lullaby == 10)
-      {
-        lullaby = 0;
-      }
-
-      if (musicalLullaby[music][lullaby] > 0)
-      {
-        if (musicalLullaby[music][lullaby] == 1)
-        {
-          ArduboyTones::tone(80, 25);
-        }
-        else if (musicalLullaby[music][lullaby] == 2)
-        {
-          ArduboyTones::tone(50, 50);
-        }
-        else
-        {
-          ArduboyTones::tone(80, 50);
-        }
-      }
       cycle = 10;
     }
   }
@@ -90,29 +74,48 @@ struct Utils
     }
   }
 
+  void playSound(const byte *score)
+  {
+    if (soundTunes->playing())
+    {
+      soundTunes->stopScore();
+    }
+    soundTunes->playScore(score);
+  }
+
   void koBeep()
   {
-    ArduboyTones::tone(250, 50);
+    playSound(Tunes::soundTick);
   }
 
   void okBeep()
   {
-    ArduboyTones::tone(700, 50);
+    playSound(Tunes::soundClick);
   }
 
-  void subtleKoBeep()
+  void startBeep()
   {
-    ArduboyTones::tone(200, 40);
+    playSound(Tunes::soundStart);
   }
 
-  void subtleOkBeep()
+  void overBeep()
   {
-    ArduboyTones::tone(600, 40);
+    playSound(Tunes::soundOver);
   }
 
-  uint8_t sizeTypeAbs(uint8_t a, uint8_t b)
+  void levelUpBeep()
   {
-    return a < b ? b - a : a - b;
+    playSound(Tunes::soundLevelUp);
+  }
+
+  void boundBeep()
+  {
+    playSound(Tunes::soundBound);
+  }
+
+  void fastBeep()
+  {
+    playSound(Tunes::soundFast);
   }
 };
 

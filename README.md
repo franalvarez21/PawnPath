@@ -24,4 +24,7 @@ WIP
 
 ## Compilation log
 
-June 30, 2021. V0.1
+August 8, 2021. V0.1
+
+Sketch uses 24588 bytes (85%) of program storage space. Maximum is 28672 bytes.
+Global variables use 1645 bytes (64%) of dynamic memory, leaving 915 bytes for local variables. Maximum is 2560 bytes.

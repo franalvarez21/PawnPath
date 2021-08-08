@@ -27,9 +27,4 @@ public:
       multiplier *= 10;
     }
   }
-
-  static uint8_t sizeTypeAbs(uint8_t a, uint8_t b)
-  {
-    return a < b ? b - a : a - b;
-  }
 };
