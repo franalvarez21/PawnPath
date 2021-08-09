@@ -70,7 +70,16 @@ https://community.arduboy.com/t/pawnpath-path-trial-walker-game/9999
 
 ## Compilation log
 
+# v0.1 Base game
+
 August 8, 2021. V0.1
 
 Sketch uses 24588 bytes (85%) of program storage space. Maximum is 28672 bytes.
+Global variables use 1645 bytes (64%) of dynamic memory, leaving 915 bytes for local variables. Maximum is 2560 bytes.
+
+# v0.2 Improvement in random level generation
+
+August 9, 2021. V0.2
+
+Sketch uses 24726 bytes (86%) of program storage space. Maximum is 28672 bytes.
 Global variables use 1645 bytes (64%) of dynamic memory, leaving 915 bytes for local variables. Maximum is 2560 bytes.

@@ -242,6 +242,11 @@ public:
       walkerCircle();
       unfairMap(stats);
       unblockPathMap();
+
+      if(switchOffAmount < 3)
+      {
+        reset(stats, 0);
+      }
     }
     else if (mode == 1)
     {
@@ -479,8 +484,26 @@ private:
       return 20;
     case 61 ... 80:
       return 25;
-    default:
+    case 81 ... 100:
       return 30;
+    case 101 ... 200:
+      return 35;
+    case 201 ... 300:
+      return 40;
+    case 301 ... 400:
+      return 45;
+    case 401 ... 500:
+      return 50;
+    case 501 ... 600:
+      return 55;
+    case 601 ... 700:
+      return 60;
+    case 701 ... 800:
+      return 65;
+    case 801 ... 900:
+      return 70;
+    default:
+      return 75;
     }
   }
 
@@ -495,9 +518,13 @@ private:
     case 41 ... 60:
       return 7;
     case 61 ... 80:
-      return 9;
+      return 10;
+    case 81 ... 100:
+      return 13;
+    case 101 ... 200:
+      return 16;
     default:
-      return 12;
+      return 19;
     }
   }
 
