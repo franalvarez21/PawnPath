@@ -242,8 +242,9 @@ public:
       walkerCircle();
       unfairMap(stats);
       unblockPathMap();
+      fragilePathMap();
 
-      if(switchOffAmount < 3)
+      if (switchOffAmount < 3)
       {
         reset(stats, 0);
       }
@@ -466,6 +467,41 @@ private:
           else if (map[i][j + 1] == 0 && j < SQUARE_AMOUNT_HEIGHT - 3)
           {
             map[i][j + 1] = 2;
+          }
+        }
+      }
+    }
+  }
+
+  void fragilePathMap()
+  {
+    for (uint8_t i = 1; i < SQUARE_AMOUNT_WEIGHT - 1; i++)
+    {
+      for (uint8_t j = 1; j < SQUARE_AMOUNT_HEIGHT - 1; j++)
+      {
+        if (map[i][j] == 3)
+        {
+          uint8_t amount = 0;
+          if (map[i - 1][j] != 0)
+          {
+            amount++;
+          }
+          if (map[i + 1][j] != 0)
+          {
+            amount++;
+          }
+          if (map[i][j - 1] != 0)
+          {
+            amount++;
+          }
+          if (map[i][j + 1] != 0)
+          {
+            amount++;
+          }
+
+          if (amount == 3)
+          {
+            map[i][j] = 2;
           }
         }
       }
