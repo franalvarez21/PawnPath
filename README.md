@@ -1,6 +1,6 @@
 # Pawn Path
 
-Pawn Path - path walker game for the Arduboy system
+Pawn Path - Puzzle path walker game for the Arduboy system
 
 <img src="https://github.com/franalvarez21/PawnPath/blob/main/PawnPath/title.png" width="200" height="100">
 <img src="https://github.com/franalvarez21/PawnPath/blob/main/PawnPath/demo.gif" width="200" height="100">
